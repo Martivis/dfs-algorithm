@@ -4,36 +4,46 @@ Console.WriteLine("Введите рёбра графа (например: 1 2).
 while (true)
 {
     var line = Console.ReadLine();
-    if (string.IsNullOrWhiteSpace(line)) break;
+    if (string.IsNullOrWhiteSpace(line)) 
+        break;
 
     var parts = line.Split();
-    if (parts.Length == 2 && int.TryParse(parts[0], out int u) && int.TryParse(parts[1], out int v))
+    if (int.TryParse(parts[0], out int u) && int.TryParse(parts[1], out int v))
     {
         edges.Add((u, v));
-    }
-    else
-    {
-        Console.WriteLine("Некорректный ввод. Введите два числа, разделённых пробелом.");
     }
 }
 
 Console.Write("Введите стартовую вершину: ");
 int startVertex;
-while (!int.TryParse(Console.ReadLine(), out startVertex))
+if (!int.TryParse(Console.ReadLine(), out startVertex))
 {
-    Console.Write("Пожалуйста, введите корректное число: ");
+    return;
 }
 
-var result = DFS(edges, startVertex);
+Console.Write("Введите конечную вершину (b): ");
+int endVertex;
+if (!int.TryParse(Console.ReadLine(), out endVertex))
+{
+    return;
+}
 
-Console.WriteLine("Путь обхода в глубину:");
-Console.WriteLine(string.Join(", ", result));
+var (path, length) = DFSFindPath(edges, startVertex, endVertex);
+
+if (path.Count > 0)
+{
+    Console.WriteLine("Путь от {0} до {1}: {2}", startVertex, endVertex, string.Join(" -> ", path));
+    Console.WriteLine("Длина пути: " + length);
+}
+else
+{
+    Console.WriteLine("Путь от {0} до {1} не найден.", startVertex, endVertex);
+}
 
 
-static List<int> DFS(List<(int, int)> edges, int start)
+static (List<int> path, int length) DFSFindPath(List<(int, int)> edges, int start, int target)
 {
     var graph = new Dictionary<int, List<int>>();
-
     foreach (var (u, v) in edges)
     {
         if (!graph.ContainsKey(u)) graph[u] = new List<int>();
@@ -43,24 +53,32 @@ static List<int> DFS(List<(int, int)> edges, int start)
     }
 
     var visited = new HashSet<int>();
-    var result = new List<int>();
+    var path = new List<int>();
+    bool found = false;
 
-    void Dfs(int node)
+    void Dfs(int current, List<int> currentPath)
     {
-        if (visited.Contains(node)) return;
+        if (found || visited.Contains(current)) return;
 
-        visited.Add(node);
-        result.Add(node);
+        visited.Add(current);
+        currentPath.Add(current);
 
-        if (graph.ContainsKey(node))
+        if (current == target)
         {
-            foreach (var neighbor in graph[node])
+            path.AddRange(currentPath);
+            found = true;
+            return;
+        }
+
+        if (graph.ContainsKey(current))
+        {
+            foreach (var neighbor in graph[current])
             {
-                Dfs(neighbor);
+                Dfs(neighbor, new List<int>(currentPath));
             }
         }
     }
 
-    Dfs(start);
-    return result;
+    Dfs(start, new List<int>());
+    return (path, path.Count > 0 ? path.Count - 1 : -1);
 }
