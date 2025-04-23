@@ -8,24 +8,28 @@ while (true)
         break;
 
     var parts = line.Split();
-    if (int.TryParse(parts[0], out int u) && int.TryParse(parts[1], out int v))
+    if (parts.Length == 2 && int.TryParse(parts[0], out int u) && int.TryParse(parts[1], out int v))
     {
         edges.Add((u, v));
     }
+    else
+    {
+        Console.WriteLine("Некорректный ввод. Введите два числа, разделённых пробелом.");
+    }
 }
 
-Console.Write("Введите стартовую вершину: ");
+Console.Write("Введите стартовую вершину (a): ");
 int startVertex;
-if (!int.TryParse(Console.ReadLine(), out startVertex))
+while (!int.TryParse(Console.ReadLine(), out startVertex))
 {
-    return;
+    Console.Write("Пожалуйста, введите корректное число: ");
 }
 
 Console.Write("Введите конечную вершину (b): ");
 int endVertex;
 if (!int.TryParse(Console.ReadLine(), out endVertex))
 {
-    return;
+    Console.Write("Пожалуйста, введите корректное число: ");
 }
 
 var (path, length) = DFSFindPath(edges, startVertex, endVertex);
