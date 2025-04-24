@@ -8,7 +8,7 @@ while (true)
         break;
 
     var parts = line.Split();
-    if (parts.Length == 2 && int.TryParse(parts[0], out int u) && int.TryParse(parts[1], out int v))
+    if (parts.Length == 2 && int.TryParse(parts[0], out int u) && int.TryParse(parts[1], out int v)) // Comment
     {
         edges.Add((u, v));
     }
