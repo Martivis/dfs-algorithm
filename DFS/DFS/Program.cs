@@ -41,7 +41,7 @@ if (path.Count > 0)
 }
 else
 {
-    Console.WriteLine("Путь от {0} до {1} не найден.", startVertex, endVertex);
+    Console.WriteLine("Путь от {0} до {1} не найден.", startVertex, endVertex);   
 }
 
 
